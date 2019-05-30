@@ -58,7 +58,7 @@ export class AuthService {
     if(usuario){
       return usuario.exp > Date.now() / 1000 ? true : false;
     }else{
-      return true;
+      return false;
     }
   }
 

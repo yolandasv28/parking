@@ -35,9 +35,9 @@ import {HttpClientModule} from '@angular/common/http';
     CommonModule,
     FormsModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyCh7rSz7BbqbYOdUcy7t0GTNgCaUxVvNmU'
-      // AIzaSyDfJO48nLxh390YRzexJrDRFRoLx9lRlac'
-     
+      apiKey: 'AIzaSyDfJO48nLxh390YRzexJrDRFRoLx9lRlac'
+      // 'AIzaSyCh7rSz7BbqbYOdUcy7t0GTNgCaUxVvNmU'
+         
 
     })
   ],

@@ -1,8 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,  Input, ViewChild, NgZone, OnInit } from '@angular/core';
 import { MapsAPILoader, AgmMap } from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
 
 declare var google: any;
+  
+interface Marker {
+  lat: number;
+  lng: number;
+  label?: string;
+  draggable: boolean;
+}
+
+interface Location {
+  lat: number;
+  lng: number;
+  viewport?: Object;
+  zoom: number;
+  address_level_1?:string;
+  address_level_2?: string;
+  address_country?: string;
+  address_zip?: string;
+  address_state?: string;
+  marker?: Marker;
+}
 
 @Component({
   selector: 'app-mapa',
@@ -11,10 +31,59 @@ declare var google: any;
 })
 export class MapaComponent implements OnInit {
 
-  constructor() { }
+ 
+  geocoder:any;
+  public location:Location = {
+    lat: 51.678418,
+    lng: 7.809007,
+    marker: {
+      lat: 51.678418,
+      lng: 7.809007,
+      draggable: true
+    },
+    zoom: 5
+  };
+
+  @ViewChild(AgmMap) map: AgmMap;
+
+
+  constructor(public mapsApiLoader: MapsAPILoader,
+    private zone: NgZone,
+    private wrapper: GoogleMapsAPIWrapper) {
+      this.mapsApiLoader = mapsApiLoader;
+      this.zone = zone;
+      this.wrapper = wrapper;
+      this.mapsApiLoader.load().then(() => {
+        this.geocoder = new google.maps.Geocoder();
+      });
+   }
 
   ngOnInit() {
+    this.location.marker.draggable = true;
 
+  }
+
+  updateOnMap() {
+    let full_address:string = this.location.address_level_1 || ""
+    if (this.location.address_level_2) full_address = full_address + " " + this.location.address_level_2
+    if (this.location.address_state) full_address = full_address + " " + this.location.address_state
+    if (this.location.address_country) full_address = full_address + " " + this.location.address_country
+ 
+    this.findLocation(full_address);
+  }
+
+  findLocation(address) {
+    if (!this.geocoder) this.geocoder = new google.maps.Geocoder()
+    this.geocoder.geocode({
+      'address': address
+    }, (results, status) => {
+      console.log(results);
+      if (status == google.maps.GeocoderStatus.OK) {
+                // decompose the result
+      } else {
+        alert("Sorry, this search produced no results.");
+      }
+    })
   }
  
 }
